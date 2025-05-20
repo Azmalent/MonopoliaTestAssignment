@@ -8,12 +8,16 @@ namespace MonopoliaTestAssignment
         public DbSet<Pallet> Pallets { get; set; } = null!;
         public DbSet<Box> Boxes { get; set; } = null!;
 
+        private readonly string dataSource;
+
+        public WarehouseDbContext(string dataSource)
+        {
+            this.dataSource = dataSource;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
-            string dbPath = projectDir.FullName + "/Database/warehouse.db";
-            optionsBuilder.UseSqlite("Data Source=" + dbPath);
-
+            optionsBuilder.UseSqlite("Data Source=" + dataSource);
             base.OnConfiguring(optionsBuilder);
         }
     }

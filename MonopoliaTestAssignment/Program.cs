@@ -45,7 +45,10 @@ using MonopoliaTestAssignment.Models;
 
 SQLitePCL.Batteries.Init();
 
-using (var db = new WarehouseDbContext())
+var projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
+string dbPath = projectDir.FullName + "/Database/warehouse.db";
+
+using (var db = new WarehouseDbContext(dbPath))
 {
     var pallet = new Pallet { Width = 10, Height = 15, Depth = 20 };
     db.Pallets.Add(pallet);
