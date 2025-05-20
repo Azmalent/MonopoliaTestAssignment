@@ -40,5 +40,39 @@
 - (Совершенно не обязательно) Вместо консольного приложения сделать полноценный пользовательский интерфейс. На оценку решения никак не влияет.
  */
 
-// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+using MonopoliaTestAssignment;
+using MonopoliaTestAssignment.Models;
+
+SQLitePCL.Batteries.Init();
+
+using (var db = new WarehouseDbContext())
+{
+    var pallet = new Pallet { Width = 10, Height = 15, Depth = 20 };
+    db.Pallets.Add(pallet);
+
+    var box1 = new Box
+    {
+        Width = 10,
+        Height = 5,
+        Depth = 10,
+        Weight = 6,
+        Date = new DateOnly(2025, 6, 1),
+        IsExpirationDate = true,
+        Pallet = pallet
+    };
+
+    var box2 = new Box
+    {
+        Width = 10,
+        Height = 15,
+        Depth = 10,
+        Weight = 3,
+        Date = new DateOnly(2024, 4, 10),
+        IsExpirationDate = false,
+        Pallet = pallet
+    };
+
+    db.Boxes.AddRange(box1, box2);
+    db.SaveChanges();
+}
+    
