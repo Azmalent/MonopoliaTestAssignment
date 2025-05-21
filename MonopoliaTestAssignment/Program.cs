@@ -40,8 +40,8 @@
 - (Совершенно не обязательно) Вместо консольного приложения сделать полноценный пользовательский интерфейс. На оценку решения никак не влияет.
  */
 
+using Microsoft.EntityFrameworkCore;
 using MonopoliaTestAssignment;
-using MonopoliaTestAssignment.Models;
 
 SQLitePCL.Batteries.Init();
 
@@ -50,32 +50,32 @@ string dbPath = projectDir.FullName + "/Database/warehouse.db";
 
 using (var db = new WarehouseDbContext(dbPath))
 {
-    var pallet = new Pallet { Width = 10, Height = 15, Depth = 20 };
-    db.Pallets.Add(pallet);
+    var pallets = db.Pallets.Include(p => p.Boxes).ToList();
 
-    var box1 = new Box
+    var query = pallets.GroupBy(p => p.ExpirationDate)
+                       .OrderBy(g => g.Key)
+                       .SelectMany(g => g.OrderBy(p => p.Weight));
+
+    Console.WriteLine("╔═══════════════╦═══════╗");
+    Console.WriteLine("║ Срок годности ║  Вес  ║");
+    Console.WriteLine("╠═══════════════╬═══════╣");
+
+    foreach (var p in query)
     {
-        Width = 10,
-        Height = 5,
-        Depth = 10,
-        Weight = 6,
-        Date = new DateOnly(2025, 6, 1),
-        IsExpirationDate = true,
-        Pallet = pallet
-    };
+        Console.WriteLine(string.Format("║ {0,-13} ║ {1,-5} ║", p.ExpirationDate, p.Weight));
+    }
 
-    var box2 = new Box
+    Console.WriteLine("╚═══════════════╩═══════╝\n");
+
+
+
+    var top3Query = pallets.OrderByDescending(p => p.ExpirationDate).Take(3).OrderBy(p => p.Volume).ToList();
+
+    Console.WriteLine("Три паллеты с наибольшим сроком годности, отсортированные по возрастанию объёма:");
+
+    for (int i = 0; i < top3Query.Count; i++)
     {
-        Width = 10,
-        Height = 15,
-        Depth = 10,
-        Weight = 3,
-        Date = new DateOnly(2024, 4, 10),
-        IsExpirationDate = false,
-        Pallet = pallet
-    };
-
-    db.Boxes.AddRange(box1, box2);
-    db.SaveChanges();
+        var pallet = top3Query[i];
+        Console.WriteLine((i + 1) + ". " + pallet.ExpirationDate.ToString() + " (Объём: " + pallet.Volume + ")");
+    }
 }
-    
