@@ -1,4 +1,6 @@
-﻿namespace MonopoliaTestAssignment.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MonopoliaTestAssignment.Models
 {
     public class Box : WarehouseItem
     {
@@ -12,8 +14,8 @@
 
         public Pallet? Pallet { get; set; }
 
-        public override int Volume => Width * Height * Depth;
+        [NotMapped] public override int Volume => Width * Height * Depth;
 
-        public override DateOnly? ExpirationDate => IsExpirationDate ? Date : Date.AddDays(100);
+        [NotMapped] public override DateOnly? ExpirationDate => IsExpirationDate ? Date : Date.AddDays(100);
     }
 }
