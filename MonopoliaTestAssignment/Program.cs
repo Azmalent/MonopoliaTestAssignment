@@ -1,81 +1,68 @@
 ﻿/*
- *  Разработать консольное .NET приложение для склада, удовлетворяющее следующим требованиям:
+Разработать консольное .NET приложение для склада, удовлетворяющее следующим требованиям:
 
 - Построить иерархию классов, описывающих объекты на складе - паллеты и коробки:
-
     - Помимо общего набора стандартных свойств (ID, ширина, высота, глубина, вес), паллета может содержать в себе коробки.
-
     - У коробки должен быть указан срок годности или дата производства. Если указана дата производства, то срок годности вычисляется из даты производства плюс 100 дней.
-
         - Срок годности и дата производства — это конкретная дата без времени (например, 01.01.2023).
-
     - Срок годности паллеты вычисляется из наименьшего срока годности коробки, вложенной в паллету. Вес паллеты вычисляется из суммы веса вложенных коробок + 30кг.
-
     - Объем коробки вычисляется как произведение ширины, высоты и глубины.
-
     - Объем паллеты вычисляется как сумма объема всех находящихся на ней коробок и произведения ширины, высоты и глубины паллеты.
-
     - Каждая коробка не должна превышать по размерам паллету (по ширине и глубине).
 
 - Консольное приложение:
-
     - Получение данных для приложения можно организовать одним из способов:
-
         - Генерация прямо в приложении
-
         - Чтение из файла или БД
-
         - Пользовательский ввод
-
     - Вывести на экран:
-
         - Сгруппировать все паллеты по сроку годности, отсортировать по возрастанию срока годности, в каждой группе отсортировать паллеты по весу.
-
         - 3 паллеты, которые содержат коробки с наибольшим сроком годности, отсортированные по возрастанию объема.
 
 - (Опционально) Покрыть функционал unit-тестами.
-
 - (Очень желательно) Код должен быть написан в соответствии с https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
-
 - (Совершенно не обязательно) Вместо консольного приложения сделать полноценный пользовательский интерфейс. На оценку решения никак не влияет.
  */
 
-using Microsoft.EntityFrameworkCore;
 using MonopoliaTestAssignment;
+using MonopoliaTestAssignment.Models;
+
+void AssignmentPartOne(WarehouseDbContext db)
+{
+    var query = db.FirstQuery();
+
+    Console.WriteLine("╔═══════════════╦═══════╗");
+    Console.WriteLine("║ Срок годности ║  Вес  ║");
+    Console.WriteLine("╠═══════════════╬═══════╣");
+
+    foreach (Pallet p in query)
+    {
+        Console.WriteLine($"║ {p.ExpirationDate,-13} ║ {p.Weight,-5} ║");
+    }
+
+    Console.WriteLine("╚═══════════════╩═══════╝");
+}
+
+void AssignmentPartTwo(WarehouseDbContext db)
+{
+    var query = db.SecondQuery().ToList();
+
+    Console.WriteLine("Три паллеты с наибольшим сроком годности, отсортированные по возрастанию объёма:");
+
+    for (int i = 0; i < query.Count; i++)
+    {
+        var pallet = query[i];
+        Console.WriteLine($"{i + 1}. {pallet.ExpirationDate} (Объём: {pallet.Volume})");
+    }
+}
 
 SQLitePCL.Batteries.Init();
 
 var projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
 string dbPath = projectDir.FullName + "/Database/warehouse.db";
 
-using (var db = new WarehouseDbContext(dbPath))
-{
-    var pallets = db.Pallets.Include(p => p.Boxes).ToList();
+using var db = new WarehouseDbContext(dbPath);
 
-    var query = pallets.GroupBy(p => p.ExpirationDate)
-                       .OrderBy(g => g.Key)
-                       .SelectMany(g => g.OrderBy(p => p.Weight));
-
-    Console.WriteLine("╔═══════════════╦═══════╗");
-    Console.WriteLine("║ Срок годности ║  Вес  ║");
-    Console.WriteLine("╠═══════════════╬═══════╣");
-
-    foreach (var p in query)
-    {
-        Console.WriteLine(string.Format("║ {0,-13} ║ {1,-5} ║", p.ExpirationDate, p.Weight));
-    }
-
-    Console.WriteLine("╚═══════════════╩═══════╝\n");
-
-
-
-    var top3Query = pallets.OrderByDescending(p => p.ExpirationDate).Take(3).OrderBy(p => p.Volume).ToList();
-
-    Console.WriteLine("Три паллеты с наибольшим сроком годности, отсортированные по возрастанию объёма:");
-
-    for (int i = 0; i < top3Query.Count; i++)
-    {
-        var pallet = top3Query[i];
-        Console.WriteLine((i + 1) + ". " + pallet.ExpirationDate.ToString() + " (Объём: " + pallet.Volume + ")");
-    }
-}
+AssignmentPartOne(db);
+Console.WriteLine();
+AssignmentPartTwo(db);

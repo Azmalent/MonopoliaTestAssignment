@@ -5,6 +5,11 @@ VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonopoliaTestAssignment", "MonopoliaTestAssignment\MonopoliaTestAssignment.csproj", "{67791589-6CC1-4175-8338-4F3557BD3C78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C3B9F81B-F9F6-4180-BE94-CF8461921F45}"
+	ProjectSection(ProjectDependencies) = postProject
+		{67791589-6CC1-4175-8338-4F3557BD3C78} = {67791589-6CC1-4175-8338-4F3557BD3C78}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{67791589-6CC1-4175-8338-4F3557BD3C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67791589-6CC1-4175-8338-4F3557BD3C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67791589-6CC1-4175-8338-4F3557BD3C78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B9F81B-F9F6-4180-BE94-CF8461921F45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B9F81B-F9F6-4180-BE94-CF8461921F45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B9F81B-F9F6-4180-BE94-CF8461921F45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B9F81B-F9F6-4180-BE94-CF8461921F45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
