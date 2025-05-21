@@ -1,18 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MonopoliaTestAssignment.Models
 {
+    [Table("Boxes")]
     public class Box : WarehouseItem
     {
-        public int Weight { get; set; }
+        [Required] public int Weight { get; set; }
 
-        public DateOnly Date { get; set; }
-        
-        public bool IsExpirationDate { get; set; }
+        [Required] public DateOnly Date { get; set; }
 
-        public int PalletId { get; set; }
+        [Required] public bool IsExpirationDate { get; set; }
 
-        public Pallet? Pallet { get; set; }
+        [Required, ForeignKey("PalletId")] public Pallet? Pallet { get; set; }
 
         [NotMapped] public override int Volume => Width * Height * Depth;
 

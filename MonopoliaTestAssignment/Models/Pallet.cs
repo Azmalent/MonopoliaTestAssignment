@@ -2,6 +2,7 @@
 
 namespace MonopoliaTestAssignment.Models
 {
+    [Table("Pallets")]
     public class Pallet : WarehouseItem
     {
         internal static readonly int PALLET_WEIGHT = 30;
